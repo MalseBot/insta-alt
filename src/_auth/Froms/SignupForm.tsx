@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button'
 import * as z from 'zod'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,7 +14,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import Loader from '@/components/ui/shared/Loader'
-import { createUserAccount } from '@/lib/appwrite/api'
+import { useCreateUserAccount, useSignInAccount } from '@/lib/react-query/queriesAndMutations'
+import { useUserContext } from '@/context/AuthContext'
 const formSchema = z.object({
   username: z.string().min(2).max(50),
   email: z.string().min(2).max(50),
@@ -23,7 +24,12 @@ const formSchema = z.object({
 })
 
 const SignupForm = () => {
-  const isLoading = false
+    const navigate = useNavigate()
+    const { toast } = useToast()
+    const {checkAuthUser,isLoading:isUserLoading}=useUserContext()
+  const {isPending:isCreatingAccount,mutateAsync:createUserAccount}=useCreateUserAccount()
+
+  const {mutateAsync:signInAccount,isPending:isSigningIn}= useSignInAccount();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +45,23 @@ const SignupForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // crete a user
     const newUser= await createUserAccount(values);
-    console.log(newUser)
+    if(!newUser){
+      return toast({title:'Sign up failed please try again'})
+    }
+    const session=await signInAccount({
+      email: values.email,
+      password: values.password
+    })
+    if(!session){return toast({title:'Sign in failed. please try again'})}
+
+    const isLoggedIn = await checkAuthUser();
+
+      if (isLoggedIn){
+        form.reset();
+        navigate('/')
+      }else{
+        return toast({title:'sign up failed please try again'})
+      }
   }
   return (
     <Form {...form}>
@@ -108,13 +130,23 @@ const SignupForm = () => {
             )}
           />
           <Button type='submit' className='shad-button_primary'>
-            {isLoading ? (
-              <div className='flex items-center gap-2'><Loader/>Loading ...</div>
+            {isCreatingAccount ? (
+              <div className='flex items-center gap-2'>
+                <Loader />
+                Loading ...
+              </div>
             ) : (
               'Sign up'
             )}
           </Button>
-          <p className='text-small-regular text-light-2 text-center'>Already have an account? <Link to={'/sign-in'} className='text-primary text-primary-500 text-small-semibold ml-1'>Log in</Link></p>
+          <p className='text-small-regular text-light-2 text-center'>
+            Already have an account?{' '}
+            <Link
+              to={'/sign-in'}
+              className='text-primary text-primary-500 text-small-semibold ml-1'>
+              Log in
+            </Link>
+          </p>
         </form>
       </div>
     </Form>
