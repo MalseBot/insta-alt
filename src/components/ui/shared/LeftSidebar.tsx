@@ -18,7 +18,7 @@ const LeftSidebar = () => {
     }
   }, [isSuccess])
   return (
-    <nav className='leftsidebar h-screen'>
+    <nav className='leftsidebar !fixed h-screen'>
       <div className='flex flex-col gap-11'>
         <Link to={'/'} className='flex gap-3 items-center'>
           <img
@@ -44,6 +44,7 @@ const LeftSidebar = () => {
             const isActive = pathname === link.route
             return (
               <li
+                key={link.label}
                 className={`leftsidbar-link hover:bg-primary-500 group p-2 rounded-lg ${
                   isActive && 'bg-primary-600'
                 }`}>

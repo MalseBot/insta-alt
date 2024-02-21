@@ -10,6 +10,7 @@ const Bottombar = () => {
         const isActive = pathname === link.route
         return (
           <Link
+          key={link.label}
             to={link.route}
             className={` hover:bg-primary-500 rounded-lg group ${
               isActive && 'bg-primary-600'
