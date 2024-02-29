@@ -34,12 +34,14 @@ type IContextType = {
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE)
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate()
   const [user, setUser] = useState<IUser>(INITIAL_USER)
-  const [isLoading, setIsLoading] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const checkAuthUser = async () => {
+    setIsLoading(true)
     try {
       const currentAccount = await getCurrentUser()
       if (currentAccount) {
@@ -52,26 +54,30 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           bio: currentAccount.bio,
         })
         setIsAuthenticated(true)
+
         return true
       }
+
       return false
     } catch (error) {
+      console.error(error)
       return false
     } finally {
       setIsLoading(false)
     }
   }
 
-  const navigate = useNavigate()
   useEffect(() => {
+    const cookieFallback = localStorage.getItem('cookieFallback')
     if (
-      localStorage.getItem('cookieFallback') === '[]' ||
-      localStorage.getItem('cookieFallback') === null
+      cookieFallback === '[]' ||
+      cookieFallback === null ||
+      cookieFallback === undefined
     ) {
       navigate('/sign-in')
     }
+
     checkAuthUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const value = {
@@ -82,9 +88,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated,
     checkAuthUser,
   }
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-
-export default AuthProvider
 
 export const useUserContext = () => useContext(AuthContext)

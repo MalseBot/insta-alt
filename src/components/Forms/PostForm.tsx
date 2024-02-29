@@ -1,6 +1,8 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { Models } from 'appwrite'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -13,12 +15,10 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '../ui/textarea'
-import FileUpLoader from '../ui/shared/FileUpLoader'
-import { Models } from 'appwrite'
-import { useUserContext } from '@/context/AuthContext'
-import { useCreatePost } from '@/lib/react-query/queriesAndMutations'
 import { useToast } from '../ui/use-toast'
-import { useNavigate } from 'react-router-dom'
+import { useUserContext } from '@/context/AuthContext'
+import FileUpLoader from '../ui/shared/FileUpLoader'
+import { useCreatePost } from '@/lib/react-query/queriesAndMutations'
 
 const formSchema = z.object({
   caption: z.string().min(5).max(2200),
@@ -31,15 +31,10 @@ type PostFromProps = {
   post?: Models.Document
   action: 'Create'
 }
-function PostForm({ post, action }: PostFromProps) {
+const PostForm = ({ post, action }: PostFromProps) => {
   const navigate = useNavigate()
   const { toast } = useToast()
   const { user } = useUserContext()
-  console.log(action)
-  console.log(post)
-
-  const { mutateAsync: createPost, isPending: isLoadingCreate } =
-    useCreatePost()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,10 +46,30 @@ function PostForm({ post, action }: PostFromProps) {
       tags: post ? post.tags.join(',') : '',
     },
   })
+  const { mutateAsync: createPost, isLoading: isLoadingCreate } =
+    useCreatePost()
 
   // 2. Define a submit handler.
-  function handleSubmit(value: z.infer<typeof formSchema>) {
-    const newPost = createPost({
+  const handleSubmit = async (value: z.infer<typeof formSchema>) => {
+    // ACTION = UPDATE
+    // if (post && action === 'Update') {
+    //   const updatedPost = await updatePost({
+    //     ...value,
+    //     postId: post.$id,
+    //     imageId: post.imageId,
+    //     imageUrl: post.imageUrl,
+    //   })
+
+    //   if (!updatedPost) {
+    //     toast({
+    //       title: `${action} post failed. Please try again.`,
+    //     })
+    //   }
+    //   return navigate(`/posts/${post.$id}`)
+    // }
+
+    // ACTION = CREATE
+    const newPost = await createPost({
       ...value,
       userId: user.id,
     })
@@ -64,8 +79,6 @@ function PostForm({ post, action }: PostFromProps) {
         title: `${action} post failed. Please try again.`,
       })
     }
-    console.log('its good')
-
     navigate('/')
   }
 

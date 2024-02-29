@@ -1,5 +1,5 @@
-import { INewPost, INewUser } from '@/types'
 import { ID, Query } from 'appwrite'
+import { INewPost, INewUser } from '@/types'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 
 export async function createUserAccount(user: INewUser) {
@@ -88,14 +88,12 @@ export async function createPost(post: INewPost) {
   try {
     // Upload file to appwrite storage
     const uploadedFile = await uploadFile(post.file[0])
-console.log('here');
 
     if (!uploadedFile) throw Error
 
     // Get file url
     const fileUrl = getFilePreview(uploadedFile.$id)
     if (!fileUrl) {
-      console.log('deleted');
       
       await deleteFile(uploadedFile.$id)
       throw Error
@@ -123,7 +121,8 @@ console.log('here');
       await deleteFile(uploadedFile.$id)
       throw Error
     }
-
+    console.log('here but didnt upload');
+    
     return newPost
   } catch (error) {
     console.log(error)
@@ -175,11 +174,17 @@ export async function deleteFile(fileId: string) {
 }
 
 export async function getRecentPosts() {
-  const posts = await databases.listDocuments(
-    appwriteConfig.databaseId,
-    appwriteConfig.postsCollectionId,
-    [Query.orderDesc('$createdAt'), Query.limit(20)]
-  )
-  if (!posts) throw Error
-  return posts
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postsCollectionId,
+      [Query.orderDesc('$createdAt'), Query.limit(20)]
+    )
+
+    if (!posts) throw Error
+
+    return posts
+  } catch (error) {
+    console.log(error)
+  }
 }

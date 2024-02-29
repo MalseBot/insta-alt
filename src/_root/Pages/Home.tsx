@@ -1,4 +1,5 @@
 import Loader from '@/components/ui/shared/Loader'
+import PostCard from '@/components/ui/shared/PostCard'
 import { useGetRecentPosts } from '@/lib/react-query/queriesAndMutations'
 import { Models } from 'appwrite'
 
@@ -15,7 +16,7 @@ const Home = () => {
           <h2 className='h3-bold md:h2-bold text-left w-full'>Home feed</h2>
           {isPostLoading && !posts ? <Loader /> : <ul className='flex flex-1 flex-col w-full gap-9'>
             {posts?.documents.map((post:Models.Document)=>(
-              <li key={post.label}>{post.caption}</li>
+              <PostCard key={post.caption} post={post}/>
             ))}
             </ul>}
         </div>
