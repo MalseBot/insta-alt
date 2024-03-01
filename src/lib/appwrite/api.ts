@@ -94,7 +94,6 @@ export async function createPost(post: INewPost) {
     // Get file url
     const fileUrl = getFilePreview(uploadedFile.$id)
     if (!fileUrl) {
-      
       await deleteFile(uploadedFile.$id)
       throw Error
     }
@@ -121,8 +120,8 @@ export async function createPost(post: INewPost) {
       await deleteFile(uploadedFile.$id)
       throw Error
     }
-    console.log('here but didnt upload');
-    
+    console.log('here but didnt upload')
+
     return newPost
   } catch (error) {
     console.log(error)
@@ -136,8 +135,7 @@ export async function uploadFile(file: File) {
       ID.unique(),
       file
     )
-      console.log('not uploaded');
-      
+
     return uploadedFile
   } catch (error) {
     console.log(error)
@@ -184,6 +182,61 @@ export async function getRecentPosts() {
     if (!posts) throw Error
 
     return posts
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function likePost(postId: string, likeArray: string[]) {
+  try {
+    const updatePost = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postsCollectionId,
+      postId,
+      {
+        likes: likeArray,
+      }
+    )
+    if (!updatePost) {
+      throw Error
+    }
+    return updatePost
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function savePost(postId: string, userId: string) {
+  try {
+    const updatePost = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      ID.unique(),
+      {
+        user: userId,
+        post:postId
+      }
+    )
+    if (!updatePost) {
+      throw Error
+    }
+    return updatePost
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function deleteSavedPost(savedRecordId:string) {
+  try {
+    const statusCode = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      savedRecordId,
+    )
+    if (!statusCode) {
+      throw Error
+    }
+    return {status:'ok'}
   } catch (error) {
     console.log(error)
   }
