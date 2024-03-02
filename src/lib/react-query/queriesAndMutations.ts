@@ -2,9 +2,25 @@ import {
   useQuery,
   useMutation,
   useQueryClient,
+  useInfiniteQuery,
 } from '@tanstack/react-query'
 
-import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentUser, getPostById, getRecentPosts, likePost, savePost, signInAccount, signOutAccount, updatePost } from '../appwrite/api'
+import {
+  createPost,
+  createUserAccount,
+  deletePost,
+  deleteSavedPost,
+  getCurrentUser,
+  getInfinitePost,
+  getPostById,
+  getRecentPosts,
+  likePost,
+  savePost,
+  seacrchPosts,
+  signInAccount,
+  signOutAccount,
+  updatePost,
+} from '../appwrite/api'
 import { INewPost, INewUser, IUpdatePost } from '@/types'
 import { QUERY_KEYS } from './queryKeys'
 
@@ -21,7 +37,7 @@ export const useSignInAccount = () => {
 }
 export const useSignOutAccount = () => {
   return useMutation({
-    mutationFn: signOutAccount
+    mutationFn: signOutAccount,
   })
 }
 
@@ -37,9 +53,9 @@ export const useCreatePost = () => {
   })
 }
 
-export const useGetRecentPosts = ()=>{
+export const useGetRecentPosts = () => {
   return useQuery({
-    queryKey:[QUERY_KEYS.GET_RECENT_POSTS],
+    queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
     queryFn: getRecentPosts,
   })
 }
@@ -93,8 +109,7 @@ export const useSavePost = () => {
 export const useDeleteSavedPost = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (savedRecordId:string) =>
-      deleteSavedPost(savedRecordId),
+    mutationFn: (savedRecordId: string) => deleteSavedPost(savedRecordId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
@@ -109,11 +124,10 @@ export const useDeleteSavedPost = () => {
   })
 }
 
-
-export const useGetCurrentUser=()=>{
+export const useGetCurrentUser = () => {
   return useQuery({
-    queryKey:[QUERY_KEYS.GET_CURRENT_USER],
-    queryFn:getCurrentUser
+    queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+    queryFn: getCurrentUser,
   })
 }
 
@@ -140,11 +154,32 @@ export const useUpdatePost = () => {
 export const useDeletePost = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({postId,imageId}:{postId:string,imageId:string}) => deletePost(postId,imageId),
+    mutationFn: ({ postId, imageId }: { postId: string; imageId: string }) =>
+      deletePost(postId, imageId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
       })
     },
+  })
+}
+
+export const useGetPosts = () => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+    queryFn: getInfinitePost,
+    getNextPageParam: (lastPage) => {
+      if (lastPage && lastPage.documents.length === 0) return null
+      const lastId=lastPage?.documents[lastPage?.documents.length - 1].$id;
+      return lastId
+    },
+  })
+}
+
+export const useSearchPosts= (searchTerm:string)=>{
+  return useQuery({
+    queryKey:[QUERY_KEYS.SEARCH_POSTS],
+    queryFn:()=>seacrchPosts(searchTerm),
+    enabled: !!searchTerm
   })
 }
