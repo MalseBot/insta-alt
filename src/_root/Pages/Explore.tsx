@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Input } from '@/components/ui/input'
 import GridPostList from '@/components/ui/shared/GridPostList'
 import Loader from '@/components/ui/shared/Loader'
@@ -26,7 +27,7 @@ const Explore = () => {
   const shouldShowResults = searchValue !== ''
   const shouldShowPosts =
     !shouldShowResults &&
-    posts.pages.every((item) => item.documents.length === 0)
+    posts.pages.every((item: { documents: string | any[] }) => item.documents.length === 0)
   return (
     <div className='explore-container'>
       <div className='explore-inner_container'>
@@ -68,7 +69,7 @@ const Explore = () => {
         ) : shouldShowPosts ? (
           <p className='text-light-4 mt-10 text-center w-full'>End Of Posts</p>
         ) : (
-          posts.pages.map((item, index) => (
+          posts.pages.map((item,index) => (
             <GridPostList key={`page-${index}`} posts={item.documents} />
           ))
         )}

@@ -4,7 +4,6 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { sidebarLinks } from '@/constants'
 import { INavLink } from '@/types'
-import { isatty } from 'tty'
 import { Button } from '../button'
 
 const LeftSidebar = () => {

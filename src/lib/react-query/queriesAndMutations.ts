@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useQuery,
   useMutation,
@@ -70,7 +71,7 @@ export const useLikePost = () => {
       postId: string
       likeArray: string[]
     }) => likePost(postId, likeArray),
-    onSuccess: (data) => {
+    onSuccess: (data: { $id: any }) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       })
@@ -143,7 +144,7 @@ export const useUpdatePost = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (post: IUpdatePost) => updatePost(post),
-    onSuccess: (data) => {
+    onSuccess: (data: { $id: any }) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       })
@@ -168,18 +169,18 @@ export const useGetPosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
     queryFn: getInfinitePost,
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage: { documents: string | any[] }) => {
       if (lastPage && lastPage.documents.length === 0) return null
-      const lastId=lastPage?.documents[lastPage?.documents.length - 1].$id;
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id
       return lastId
     },
   })
 }
 
-export const useSearchPosts= (searchTerm:string)=>{
+export const useSearchPosts = (searchTerm: string) => {
   return useQuery({
-    queryKey:[QUERY_KEYS.SEARCH_POSTS,searchTerm],
-    queryFn:()=>seacrchPosts(searchTerm),
-    enabled: !!searchTerm
+    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
+    queryFn: () => seacrchPosts(searchTerm),
+    enabled: !!searchTerm,
   })
 }
