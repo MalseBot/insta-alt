@@ -18,7 +18,10 @@ import { Textarea } from '../ui/textarea'
 import { useToast } from '../ui/use-toast'
 import { useUserContext } from '@/context/AuthContext'
 import FileUpLoader from '../ui/shared/FileUpLoader'
-import { useCreatePost } from '@/lib/react-query/queriesAndMutations'
+import {
+  useCreatePost,
+  useUpdatePost,
+} from '@/lib/react-query/queriesAndMutations'
 
 const formSchema = z.object({
   caption: z.string().min(5).max(2200),
@@ -29,7 +32,7 @@ const formSchema = z.object({
 
 type PostFromProps = {
   post?: Models.Document
-  action: 'Create'
+  action: 'Create' | 'Update'
 }
 const PostForm = ({ post, action }: PostFromProps) => {
   const navigate = useNavigate()
@@ -46,27 +49,28 @@ const PostForm = ({ post, action }: PostFromProps) => {
       tags: post ? post.tags.join(',') : '',
     },
   })
-  const { mutateAsync: createPost, isLoading: isLoadingCreate } =
+  const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost()
+
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+    useUpdatePost()
 
   // 2. Define a submit handler.
   const handleSubmit = async (value: z.infer<typeof formSchema>) => {
     // ACTION = UPDATE
-    // if (post && action === 'Update') {
-    //   const updatedPost = await updatePost({
-    //     ...value,
-    //     postId: post.$id,
-    //     imageId: post.imageId,
-    //     imageUrl: post.imageUrl,
-    //   })
+    if (post && action === 'Update') {
+      const updatedPost= await updatePost({
+        ...value,
+        postId:post.$id,
+        imageId:post?.imageId,
+        imageUrl:post?.imageUrl
+      })
+      if(!updatedPost){
+        toast({title:'Please try again'})
+      }
 
-    //   if (!updatedPost) {
-    //     toast({
-    //       title: `${action} post failed. Please try again.`,
-    //     })
-    //   }
-    //   return navigate(`/posts/${post.$id}`)
-    // }
+      return navigate(`/posts/${post.$id}`)
+    }
 
     // ACTION = CREATE
     const newPost = await createPost({
@@ -96,7 +100,7 @@ const PostForm = ({ post, action }: PostFromProps) => {
               <FormControl>
                 <Textarea
                   className='shad-textarea custom-scrollbar'
-                  placeholder='shadcn'
+                  placeholder='beautiful'
                   {...field}
                 />
               </FormControl>
@@ -161,7 +165,7 @@ const PostForm = ({ post, action }: PostFromProps) => {
         <div className='flex gap-4 items-center justify-end'>
           <Button
             type='submit'
-            className='shad-button_primary whitespace-nowrap'>
+            className='shad-button_primary whitespace-nowrap' disabled={isLoadingCreate || isLoadingUpdate}>
             {action} Post
           </Button>
           <Button type='button' className='shad-button_dark_4'>

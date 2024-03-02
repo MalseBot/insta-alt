@@ -6,6 +6,7 @@ import SignupForm from './_auth/Froms/SignupForm'
 import AuthLayout from './_auth/AuthLayout'
 import RootLayout from './_root/RootLayout'
 import { Toaster } from '@/components/ui/toaster'
+import PostDetails from './_root/Pages/PostDetails'
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           <Route path='/update-post/:id' element={<EditPost />} />
           <Route path='/profile/:id/*' element={<Profile />} />
           <Route path='/profile/:id' element={<ProfileDetails />} />
+          <Route path={`/posts/:id/*`} element={<PostDetails/>}/>
           <Route path='/update-profile/:id' element={<UpdateProfile />} />
         </Route>
       </Routes>
