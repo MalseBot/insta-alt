@@ -2,7 +2,7 @@ import React from 'react'
 
 function ProfileDetails() {
   return (
-    <div>ProfileDetails</div>
+    <div>Soon.....</div>
   )
 }
 

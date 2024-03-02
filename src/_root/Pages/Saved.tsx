@@ -2,7 +2,7 @@ import React from 'react'
 
 function Saved() {
   return (
-    <div>Saved</div>
+    <div>soon.....</div>
   )
 }
 
