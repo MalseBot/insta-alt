@@ -3,6 +3,7 @@ import GridPostList from './GridPostList'
 
 type SearchResultsProps = {
   isSearchFetching: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   searchedPosts: any
 }
 function SearchResults({

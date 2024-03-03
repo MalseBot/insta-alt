@@ -224,7 +224,7 @@ export async function getRecentPosts() {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postsCollectionId,
-      [Query.orderDesc('$createdAt'), Query.limit(3)]
+      [Query.orderDesc('$createdAt'), Query.limit(10)]
     )
 
     if (!posts) throw Error
@@ -317,9 +317,13 @@ export async function deletePost(postId: string, imageId: string) {
   }
 }
 
-export async function getInfinitePost({ pageParam }: { pageParam: number }) {
-  const queries: string[] = [Query.orderDesc('$createdAt'), Query.limit(3)]
-  if (pageParam) queries.push(Query.cursorAfter(pageParam.toString()))
+export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const queries: any = [Query.orderDesc('$updatedAt'), Query.limit(9)]
+
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()))
+  }
 
   try {
     const posts = await databases.listDocuments(
@@ -327,7 +331,9 @@ export async function getInfinitePost({ pageParam }: { pageParam: number }) {
       appwriteConfig.postsCollectionId,
       queries
     )
+
     if (!posts) throw Error
+
     return posts
   } catch (error) {
     console.log(error)

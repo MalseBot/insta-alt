@@ -12,7 +12,7 @@ import {
   deletePost,
   deleteSavedPost,
   getCurrentUser,
-  getInfinitePost,
+  getInfinitePosts,
   getPostById,
   getRecentPosts,
   likePost,
@@ -71,7 +71,7 @@ export const useLikePost = () => {
       postId: string
       likeArray: string[]
     }) => likePost(postId, likeArray),
-    onSuccess: (data: { $id: any }) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       })
@@ -144,7 +144,7 @@ export const useUpdatePost = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (post: IUpdatePost) => updatePost(post),
-    onSuccess: (data: { $id: any }) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       })
@@ -168,10 +168,18 @@ export const useDeletePost = () => {
 export const useGetPosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePost,
-    getNextPageParam: (lastPage: { documents: string | any[] }) => {
-      if (lastPage && lastPage.documents.length === 0) return null
-      const lastId = lastPage.documents[lastPage.documents.length - 1].$id
+    queryFn: getInfinitePosts,
+    // @ts-expect-error overload on the get
+    getNextPageParam: (lastPage) => {
+      console.log(lastPage?.documents)
+
+      // If there's no data, there are no more pages.
+      if (lastPage && lastPage.documents.length === 0) {
+        return null
+      }
+
+      // Use the $id of the last document as the cursor.
+      const lastId = lastPage?.documents[lastPage?.documents.length - 1].$id
       return lastId
     },
   })
