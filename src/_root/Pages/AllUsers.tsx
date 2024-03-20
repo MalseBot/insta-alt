@@ -1,7 +1,7 @@
 
 function AllUsers() {
   return (
-    <div>Soon .....</div>
+    <div>All Users Soon .....</div>
   )
 }
 
