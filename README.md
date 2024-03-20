@@ -1,4 +1,4 @@
-#Interoduction
+# Interoduction
 snapgram a website wher you share with the world your beautiful images and memories and many other interests.
 
 # tech stack 
