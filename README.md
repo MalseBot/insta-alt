@@ -1,6 +1,9 @@
 # Interoduction
 snapgram a website wher you share with the world your beautiful images and memories and many other interests.
 
+## Status
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1d909694-eab8-4f2b-9d33-872c2f454ba1/deploy-status)](https://app.netlify.com/sites/snapgram-alt/deploys)
+
 # tech stack 
 React + TypeScript + Vite + Appwrite + shadcn + Zod + Tailwind CSS
 
