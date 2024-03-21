@@ -4,7 +4,7 @@ export enum QUERY_KEYS {
 
   // USER KEYS
   GET_CURRENT_USER = 'getCurrentUser',
-  GET_USERS = 'getUsers',
+  GET_USERS = 'getUsers',//this one
   GET_USER_BY_ID = 'getUserById',
 
   // POST KEYS

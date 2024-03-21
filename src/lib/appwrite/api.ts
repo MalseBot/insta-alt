@@ -60,7 +60,6 @@ export async function getCurrentUser() {
   try {
     const currentAccount = await account.get()
     if (!currentAccount) throw Error
-    console.log(currentAccount)
 
     const currentUser = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -68,6 +67,7 @@ export async function getCurrentUser() {
       [Query.equal('accountId', currentAccount.$id)]
     )
     if (!currentUser) throw Error
+    
     return currentUser.documents[0]
   } catch (error) {
     console.log(error)
@@ -340,8 +340,7 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
   }
 }
 
-export async function seacrchPosts(searchTerm:string) {
-  
+export async function seacrchPosts(searchTerm: string) {
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -355,4 +354,18 @@ export async function seacrchPosts(searchTerm:string) {
   }
 }
 
+export async function getAllUsers() {
+  try {
+    const allUsers = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId
+    )
+    if (!allUsers) throw Error
+    console.log(allUsers)
 
+    return allUsers
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}

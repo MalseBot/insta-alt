@@ -11,6 +11,7 @@ import {
   createUserAccount,
   deletePost,
   deleteSavedPost,
+  getAllUsers,
   getCurrentUser,
   getInfinitePosts,
   getPostById,
@@ -58,6 +59,13 @@ export const useGetRecentPosts = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
     queryFn: getRecentPosts,
+  })
+}
+
+export const useGetAllUsers = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USERS],
+    queryFn: getAllUsers,
   })
 }
 
