@@ -11,10 +11,10 @@ function AllUsers() {
     <div className='w-full m-10 '>
       <div className='flex mb-10 ms-0'>
         <img
-          src='/public/assets/icons/people.svg'
+          src='/assets/icons/people.svg'
           width={30}
           height={30}
-          className=' mx-1'
+          className=' mx-1 invert-white'
         />
         <h2 className='font-bold text-3xl'> All Users</h2>
       </div>

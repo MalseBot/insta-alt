@@ -34,7 +34,7 @@ const LeftSidebar = () => {
             className=' h-14 w-14 rounded-full'
           />{' '}
           <div className='flex flex-col'>
-            <p className=' body-bold'>{user.name}</p>
+            <p className=' body-bold capitalize'>{user.name}</p>
             <p className=' small-regular text-light-3'>@{user.username}</p>
           </div>
         </Link>
@@ -64,7 +64,7 @@ const LeftSidebar = () => {
       </div>
       <Button
         className=' shad-button_ghost '
-        onClick={() => signOut}
+        onClick={() => signOut()}
         variant={'ghost'}>
         <img src='/assets/icons/logout.svg' alt='logout' />
         <p className='small-medium lg:base-medium'>Logout</p>

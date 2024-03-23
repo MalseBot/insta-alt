@@ -1,12 +1,13 @@
 import { Routes, Route } from 'react-router-dom'
 import './globals.css'
-import { AllUsers, CreatePost, EditPost, Explore, Home, Profile, ProfileDetails, Saved, UpdateProfile } from './_root/Pages/'
+import { AllUsers, CreatePost, EditPost, Explore, Home, ProfileDetails, Saved, UpdateProfile } from './_root/Pages/'
 import SigninForm from './_auth/Froms/SigninForm'
 import SignupForm from './_auth/Froms/SignupForm'
 import AuthLayout from './_auth/AuthLayout'
 import RootLayout from './_root/RootLayout'
 import { Toaster } from '@/components/ui/toaster'
 import PostDetails from './_root/Pages/PostDetails'
+import Profiles from './_root/Pages/Profiles'
 
 const App = () => {
   return (
@@ -26,7 +27,7 @@ const App = () => {
           <Route path='/all-users' element={<AllUsers />} />
           <Route path='/create-post' element={<CreatePost />} />
           <Route path='/update-post/:id' element={<EditPost />} />
-          <Route path='/profile/:id/*' element={<Profile />} />
+          <Route path='/profiles/:id/*' element={<Profiles />} />
           <Route path='/profile/:id' element={<ProfileDetails />} />
           <Route path={`/posts/:id/*`} element={<PostDetails/>}/>
           <Route path='/update-profile/:id' element={<UpdateProfile />} />

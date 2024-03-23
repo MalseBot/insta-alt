@@ -67,7 +67,7 @@ export async function getCurrentUser() {
       [Query.equal('accountId', currentAccount.$id)]
     )
     if (!currentUser) throw Error
-    
+
     return currentUser.documents[0]
   } catch (error) {
     console.log(error)
@@ -367,5 +367,18 @@ export async function getAllUsers() {
   } catch (error) {
     console.log(error)
     return null
+  }
+}
+
+export async function getUserPosts(userId?:string) {
+  try {
+    const posts = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      userId!
+    )
+    return posts
+  } catch (error) {
+    console.log(error)
   }
 }
