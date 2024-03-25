@@ -5,6 +5,5 @@ export { default as EditPost } from './EditPost.tsx'
 export { default as Explore } from './Explore.tsx'
 export { default as Profile } from './Profiles.tsx'
 export { default as ProfileDetails } from './ProfileDetails.tsx'
-export { default as Saved } from './Saved.tsx'
 export { default as UpdateProfile } from './UpdateProfile.tsx'
 

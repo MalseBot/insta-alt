@@ -11,6 +11,7 @@ function ProfileDetails() {
   const { user } = useUserContext()
   const { data: userId } = useGetUserPosts(viewedProfile)
   const [section, setSection] = useState('posts')
+
   return (
     <div className=' w-full m-5'>
       <div className='flex w-full flex-row gap-5 '>
@@ -26,24 +27,22 @@ function ProfileDetails() {
         <div className='w-full m-5'>
           <div className=' flex flex-row justify-between '>
             <h2 className=' text-3xl font-bold capitalize'>{userId?.name}</h2>
-            <Button
-              type='button'
-              className={` ${
-                userId?.$id !== user.id ? 'hidden' : 'shad-button_dark_4'
-              } `}>
-              <Link to={`/update-proflie/${userId?.id}`}>
+            <Link
+              to={`/update-profile/${userId?.$id}`}
+              className={` ${userId?.$id !== user.id ? 'hidden' : ''} `}>
+              <Button className='shad-button_dark_4'>
                 <img
                   src='/assets/icons/edit.svg'
                   alt='edit'
                   width={20}
                   height={20}
                 />
-              </Link>
-              Edit Profile
-            </Button>
+                Edit Profile
+              </Button>
+            </Link>
           </div>
           <h3 className='small-regular text-light-3'>@{userId?.username}</h3>
-          <p>{user.bio ? user.bio : 'a beautiful person'}</p>
+          <p>{user.bio}</p>
         </div>
       </div>
       <div className='w-full flex justify-around '>
@@ -79,7 +78,9 @@ function ProfileDetails() {
           section === 'posts' ? 'grid' : 'hidden'
         } grid-cols-3 gap-7 mt-10`}>
         {userId?.posts.map((post: Models.Document) => (
-          <li className=' shadow-inner hover:scale-105 duration-500'>
+          <li
+            key={post.$createdAt}
+            className=' shadow-inner hover:scale-105 duration-500'>
             <Link className='' to={`/posts/${post.$id}`}>
               <img className=' rounded-2xl' src={post.imageUrl} alt='' />
             </Link>
@@ -91,7 +92,9 @@ function ProfileDetails() {
           section === 'liked' ? 'grid' : 'hidden'
         } grid-cols-3 gap-7 mt-10`}>
         {userId?.liked.map((post: Models.Document) => (
-          <li className=' shadow-inner hover:scale-105 duration-500'>
+          <li
+            key={post.$createdAt}
+            className=' shadow-inner hover:scale-105 duration-500'>
             <Link className='' to={`/posts/${post.$id}`}>
               <img className=' rounded-2xl' src={post.imageUrl} alt='' />
             </Link>
@@ -105,7 +108,9 @@ function ProfileDetails() {
             : `${section === 'saved' ? 'grid' : 'hidden'}`
         }  grid-cols-3 gap-7 mt-10`}>
         {userId?.save.map((post: Models.Document) => (
-          <li className=' shadow-inner hover:scale-105 duration-500'>
+          <li
+            key={post.$createdAt}
+            className=' shadow-inner hover:scale-105 duration-500'>
             <Link className='' to={`/posts/${post.$id}`}>
               <img className=' rounded-2xl' src={post.post.imageUrl} alt='' />
             </Link>

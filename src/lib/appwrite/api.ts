@@ -1,5 +1,5 @@
 import { ID, Query } from 'appwrite'
-import { INewPost, INewUser, IUpdatePost } from '@/types'
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from '@/types'
 import { account, appwriteConfig, avatars, databases, storage } from './config'
 
 export async function createUserAccount(user: INewUser) {
@@ -120,7 +120,6 @@ export async function createPost(post: INewPost) {
       await deleteFile(uploadedFile.$id)
       throw Error
     }
-    console.log('here but didnt upload')
 
     return newPost
   } catch (error) {
@@ -370,7 +369,7 @@ export async function getAllUsers() {
   }
 }
 
-export async function getUserPosts(userId?:string) {
+export async function getUserPosts(userId?: string) {
   try {
     const posts = await databases.getDocument(
       appwriteConfig.databaseId,
@@ -378,6 +377,50 @@ export async function getUserPosts(userId?:string) {
       userId!
     )
     return posts
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function updateUser(profile: IUpdateUser) {
+  const hasFileToUpdate = profile.file.length > 0
+  try {
+    let image = {
+      imageUrl: profile.imageUrl,
+    }
+    if (hasFileToUpdate) {
+      const uploadedFile = await uploadFile(profile.file[0])
+
+      if (!uploadedFile) throw Error
+
+      const fileUrl = getFilePreview(uploadedFile.$id)
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id)
+        throw Error
+      }
+      image = { ...image, imageUrl: fileUrl }
+    }
+    console.log(profile);
+    
+    const updateUser = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      profile.userId,
+      {
+        name:profile.name,
+        bio:profile.bio,
+        imageUrl:image.imageUrl,
+      }
+    )
+
+    
+    if(!updateUser){
+      console.log(profile);
+      
+      await deleteFile(profile.userId)
+      throw Error
+    }
+    return updateUser
   } catch (error) {
     console.log(error)
   }

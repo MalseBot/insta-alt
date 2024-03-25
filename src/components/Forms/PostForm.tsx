@@ -168,7 +168,7 @@ const PostForm = ({ post, action }: PostFromProps) => {
             className='shad-button_primary whitespace-nowrap' disabled={isLoadingCreate || isLoadingUpdate}>
             {action} Post
           </Button>
-          <Button type='button' className='shad-button_dark_4'>
+          <Button type='button' className='shad-button_dark_4' onClick={()=>navigate('/')}>
             Cancel
           </Button>
         </div>

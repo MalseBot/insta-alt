@@ -17,7 +17,7 @@ const LeftSidebar = () => {
     }
   }, [isSuccess])
   return (
-    <nav className='leftsidebar'>
+    <nav className='leftsidebar h-screen'>
       <div className='flex flex-col gap-11'>
         <Link to={'/'} className='flex gap-3 items-center'>
           <img
