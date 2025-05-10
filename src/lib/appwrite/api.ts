@@ -382,6 +382,22 @@ export async function getUserPosts(userId?: string) {
   }
 }
 
+export function getImageUrl(imageId: string) {
+  const url = storage.getFilePreview(
+    appwriteConfig.storageId,
+    imageId,
+    2000,    // maximum width
+    2000,    // maximum height
+    'top',   // gravity
+    100,   // quality
+    undefined, // border
+    undefined, // border color
+    undefined  // border radius
+  );
+  
+  return url.href;
+}
+
 export async function updateUser(profile: IUpdateUser) {
   const hasFileToUpdate = profile.file.length > 0
   try {

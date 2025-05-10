@@ -1,4 +1,5 @@
 import { useUserContext } from '@/context/AuthContext'
+import { getImageUrl } from '@/lib/appwrite/api'
 import { formatDateString } from '@/lib/utils'
 import { Models } from 'appwrite'
 import { Link } from 'react-router-dom'
@@ -16,7 +17,7 @@ const PostCard = ({ post }: PostCardProps) => {
         <div className=' flex items-center gap-3'>
           <Link to={`/profile/${post.creator.$id}`}>
             <img
-              src={post?.creator?.imageUrl}
+              src={post?.creator?.imageUrl ? getImageUrl(post.creator.imageId) : '/assets/icons/profile-placeholder.svg'}
               alt='creator'
               className=' rounded-full w-12 lg:h-12'
             />
@@ -54,7 +55,11 @@ const PostCard = ({ post }: PostCardProps) => {
             ))}
           </ul>
         </div>
-        <img src={post.imageUrl || '/assets/icons/profile-placeholder'} alt="post image" className='post-card_img' />
+        <img 
+          src={post.imageUrl ? getImageUrl(post.imageId) : '/assets/icons/profile-placeholder.svg'} 
+          alt="post image" 
+          className='post-card_img' 
+        />
       </Link>
       <PostStats post={post} userId={user.id}/>
     </div>
