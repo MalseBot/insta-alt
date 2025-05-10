@@ -1,9 +1,9 @@
 import { useUserContext } from '@/context/AuthContext'
-import { getImageUrl } from '@/lib/appwrite/api'
 import { formatDateString } from '@/lib/utils'
 import { Models } from 'appwrite'
 import { Link } from 'react-router-dom'
 import PostStats from './PostStats'
+import { getImageUrl } from '@/lib/appwrite/api'
 
 type PostCardProps = {
   post: Models.Document
